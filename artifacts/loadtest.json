@@ -1,0 +1,27 @@
+{
+  "requests": 2000,
+  "concurrency": 16,
+  "throughput_rps": 74.6,
+  "endpoints": {
+    "item": {
+      "count": 314,
+      "p50_ms": 199.9,
+      "p99_ms": 275.3
+    },
+    "search": {
+      "count": 960,
+      "p50_ms": 198.5,
+      "p99_ms": 291.1
+    },
+    "recommend": {
+      "count": 501,
+      "p50_ms": 207.0,
+      "p99_ms": 291.9
+    },
+    "event": {
+      "count": 225,
+      "p50_ms": 315.2,
+      "p99_ms": 466.1
+    }
+  }
+}

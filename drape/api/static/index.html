@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Drape — personalised fashion search</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f3ee;--card:#fffdf9;--ink:#1d1b18;--ink2:#5d5952;--line:#e6e0d6;--accent:#b4532a;--chip:#efe9df;--ok:#2f7d4f}
+@media (prefers-color-scheme:dark){:root{--bg:#161513;--card:#1f1d1a;--ink:#f1ede6;--ink2:#a9a398;--line:#2f2c27;--accent:#e07a4b;--chip:#2a2723;--ok:#5fbf86}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Inter,system-ui,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:14px 24px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.logo{font:700 26px Fraunces,serif;letter-spacing:-.5px}.logo span{color:var(--accent)}
+form{flex:1;min-width:260px;display:flex}
+input[type=search]{flex:1;font:inherit;padding:11px 16px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);outline:none}
+input[type=search]:focus{border-color:var(--accent)}
+select,button{font:inherit;padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+main{max-width:1240px;margin:0 auto;padding:20px 24px 60px;display:grid;grid-template-columns:1fr 280px;gap:28px}
+@media (max-width:900px){main{grid-template-columns:1fr}aside{order:-1}}
+h2{font:600 22px Fraunces,serif;margin:6px 0 4px}.sub{color:var(--ink2);font-size:13px;margin-bottom:14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 14px}.chip{background:var(--chip);border-radius:999px;padding:3px 10px;font-size:12px;color:var(--ink2)}.chip b{color:var(--ink);font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.08)}
+.swatch{aspect-ratio:1/1;display:grid;place-items:center;background:var(--chip)}.swatch svg{width:62%;height:62%}
+.meta{padding:10px 12px 12px}.brand{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
+.t{font-size:13px;margin:2px 0 6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:37px}
+.row{display:flex;justify-content:space-between;align-items:center;font-size:13px}.price{font-weight:600}.rating{color:var(--ink2)}
+aside .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}
+.bar{height:6px;border-radius:3px;background:var(--chip);margin:3px 0 9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent)}
+.kv{display:flex;justify-content:space-between;font-size:13px}.muted{color:var(--ink2);font-size:12px}
+dialog{border:none;border-radius:18px;padding:0;max-width:980px;width:calc(100% - 32px);background:var(--bg);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.pd{display:grid;grid-template-columns:300px 1fr;gap:24px;padding:24px}@media (max-width:700px){.pd{grid-template-columns:1fr}}
+.pd .swatch{border-radius:14px}.actions{display:flex;gap:8px;margin:14px 0}
+.look{padding:0 24px 24px}.look h3,.simh{font:600 17px Fraunces,serif;margin:18px 0 8px}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.slotlabel{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2);margin-bottom:4px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:13px;opacity:0;transition:opacity .2s}
+.toast.on{opacity:1}.empty{color:var(--ink2);padding:40px 0;text-align:center}
+.tabs{display:flex;gap:6px;margin-bottom:10px}.tabs button{padding:5px 12px;font-size:12px}.tabs button.on{background:var(--ink);color:var(--bg)}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">dra<span>pe</span></div>
+  <form id="f"><input id="q" type="search" placeholder='Try "navy linen shirt for office under 2k" or "sweatshirt for women"' autocomplete="off"></form>
+  <select id="user" title="Shop as"></select>
+</header>
+<main>
+  <section>
+    <div id="head"></div>
+    <div class="tabs" id="tabs" hidden></div>
+    <div class="chips" id="chips"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+  <aside>
+    <div class="panel" id="profile"></div>
+    <div class="panel"><div class="muted">Every click, cart and purchase updates your taste vector in real time (ALS fold-in) — watch the feed and search change.</div></div>
+  </aside>
+</main>
+<dialog id="dlg"></dialog>
+<div class="toast" id="toast"></div>
+<script>
+const HEX={black:"#1f1f1f",white:"#f4f2ee",navy:"#1f2f57",grey:"#8a8a8a",beige:"#d8c7a6",olive:"#6b7036",maroon:"#6e1f2d",red:"#c8302f",blue:"#3f73c4",pink:"#e8a0b4",green:"#3e8a4f",yellow:"#e9c53c",brown:"#7a4f2d",mustard:"#c99a21",lavender:"#b4a3d9",teal:"#24857f"};
+const SHAPES={
+ top:'<path d="M30 18 L42 12 Q50 20 58 12 L70 18 L84 34 L74 42 L68 36 L68 88 L32 88 L32 36 L26 42 L16 34 Z"/>',
+ bottom:'<path d="M30 12 L70 12 L74 88 L56 88 L50 40 L44 88 L26 88 Z"/>',
+ onepiece:'<path d="M38 10 L62 10 L60 30 L78 88 L22 88 L40 30 Z"/>',
+ outerwear:'<path d="M28 16 L44 10 L50 40 L56 10 L72 16 L86 40 L76 46 L72 40 L72 88 L28 88 L28 40 L24 46 L14 40 Z"/>',
+ footwear:'<path d="M14 58 L14 40 Q30 40 40 50 Q56 56 80 58 Q90 60 88 72 L14 72 Z"/>',
+ accessory:'<circle cx="50" cy="50" r="22"/><rect x="42" y="12" width="16" height="16" rx="3"/><rect x="42" y="72" width="16" height="16" rx="3"/>'};
+const BAG='<path d="M24 36 L76 36 L82 86 L18 86 Z"/><path d="M38 36 Q38 18 50 18 Q62 18 62 36" fill="none" stroke-width="5"/>';
+const GLASS='<circle cx="32" cy="52" r="14"/><circle cx="68" cy="52" r="14"/><path d="M46 50 L54 50" stroke-width="4"/>';
+const BELT='<rect x="10" y="42" width="80" height="16" rx="4"/><rect x="42" y="38" width="16" height="24" rx="2" fill="none" stroke-width="4"/>';
+const $=s=>document.querySelector(s);
+let USER=null, view={kind:"feed"};
+function glyph(it){let p=SHAPES[it.slot];if(["handbag","backpack"].includes(it.subcategory))p=BAG;if(it.subcategory==="sunglasses")p=GLASS;if(it.subcategory==="belt")p=BELT;
+ const c=HEX[it.color]||"#999";return `<svg viewBox="0 0 100 100" fill="${c}" stroke="${c}" stroke-linejoin="round">${p}</svg>`}
+function cardHTML(it){return `<div class="card" data-id="${it.id}"><div class="swatch">${glyph(it)}</div><div class="meta"><div class="brand">${it.brand}</div><div class="t">${it.title.replace(it.brand+" ","")}</div><div class="row"><span class="price">₹${it.price.toLocaleString("en-IN")}</span><span class="rating">★ ${it.rating}</span></div></div></div>`}
+function bindCards(root){root.querySelectorAll(".card").forEach(c=>c.onclick=()=>openItem(+c.dataset.id))}
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),1800)}
+async function api(p,o){const r=await fetch(p,o);if(!r.ok)throw new Error(await r.text());return r.json()}
+async function feed(){view={kind:"feed"};$("#tabs").hidden=true;
+ if(USER===null){const r=await api(`/trending?k=24`);$("#head").innerHTML=`<h2>Trending</h2><div class="sub">Pick a shopper on the right to see a personalised feed.</div>`;$("#chips").innerHTML="";render(r.results);return}
+ const r=await api(`/recommend/${USER}?k=24`);
+ $("#head").innerHTML=`<h2>For you</h2><div class="sub">${r.n_candidates} candidates (ALS · co-visitation · popular) re-ranked by LambdaRank in ${r.timings_ms.total} ms</div>`;$("#chips").innerHTML="";render(r.results)}
+async function search(q,mode="ltr"){view={kind:"search",q,mode};
+ const u=USER===null?"":`&user_id=${USER}`;const r=await api(`/search?q=${encodeURIComponent(q)}&k=24&mode=${mode}${u}`);
+ const p=r.parsed,ch=[];if(p.category)ch.push(`category <b>${p.category}</b> ${(p.category_confidence*100).toFixed(0)}%`);
+ if(p.color)ch.push(`colour <b>${p.color}</b>`);if(p.gender)ch.push(`for <b>${p.gender}</b>`);if(p.max_price)ch.push(`under <b>₹${p.max_price}</b>`);if(p.min_price)ch.push(`over <b>₹${p.min_price}</b>`);
+ p.style_hints.forEach(s=>ch.push(`style <b>${s}</b>`));
+ $("#chips").innerHTML=ch.map(c=>`<span class="chip">${c}</span>`).join("");
+ const t=r.timings_ms;$("#head").innerHTML=`<h2>“${q}”</h2><div class="sub">${r.n_candidates??"–"} candidates · parse ${t.parse??"–"} ms · retrieve ${t.retrieve??"–"} ms · rank ${t.rank??"–"} ms${r.cached?" · cached":""}</div>`;
+ $("#tabs").hidden=false;$("#tabs").innerHTML=[["ltr","Personalised"],["hybrid","Hybrid"],["bm25","BM25 only"]].map(([m,l])=>`<button data-m="${m}" class="${m===mode?"on":""}">${l}</button>`).join("");
+ $("#tabs").querySelectorAll("button").forEach(b=>b.onclick=()=>search(q,b.dataset.m));render(r.results)}
+function render(items){$("#grid").innerHTML=items.length?items.map(cardHTML).join(""):`<div class="empty">Nothing matched — try loosening a filter.</div>`;bindCards($("#grid"))}
+async function openItem(id){if(USER!==null)log(id,"view",false);
+ const r=await api(`/items/${id}`);const it=r.item;const d=$("#dlg");
+ const look=Object.entries(r.complete_the_look).map(([s,xs])=>xs.slice(0,1).map(x=>`<div><div class="slotlabel">${s}</div>${cardHTML(x)}</div>`).join("")).join("");
+ d.innerHTML=`<div class="pd"><div class="swatch">${glyph(it)}</div><div><div class="brand">${it.brand}</div><h2>${it.title.replace(it.brand+" ","")}</h2>
+ <div class="row" style="justify-content:flex-start;gap:14px"><span class="price">₹${it.price.toLocaleString("en-IN")}</span><span class="rating">★ ${it.rating}</span></div>
+ <p class="muted">${it.description}</p><div class="chips">${["style","color","material","gender","pattern"].map(k=>`<span class="chip">${k} <b>${it[k]}</b></span>`).join("")}</div>
+ <div class="actions"><button class="primary" id="cart">Add to cart</button><button id="buy">Buy now</button><button id="close">Close</button></div>
+ <div class="muted">Panel built in ${r.timings_ms.total} ms</div></div></div>
+ <div class="look"><h3>Complete the look</h3><div class="slots">${look}</div><div class="simh">Similar items</div><div class="slots">${r.similar.slice(0,6).map(cardHTML).join("")}</div></div>`;
+ bindCards(d);$("#close").onclick=()=>d.close();$("#cart").onclick=()=>log(id,"cart");$("#buy").onclick=()=>log(id,"purchase");if(!d.open)d.showModal();d.scrollTop=0}
+async function log(id,type,notify=true){if(USER===null){if(notify)toast("Pick a shopper first");return}
+ const r=await api("/events",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({user_id:USER,item_id:id,type})});
+ if(notify)toast(`${type} logged · taste vector updated in ${r.update_ms} ms`);profile();if(view.kind==="feed"&&notify)feed()}
+async function profile(){const el=$("#profile");if(USER===null){el.innerHTML=`<div class="muted">Browsing as guest.</div>`;return}
+ const u=await api(`/users/${USER}`);const bars=xs=>xs.map(x=>`<div class="kv"><span>${x.name}</span><span class="muted">${(x.share*100).toFixed(0)}%</span></div><div class="bar"><i style="width:${Math.min(100,x.share*100)}%"></i></div>`).join("");
+ el.innerHTML=`<h2 style="font-size:18px">Shopper #${USER}</h2><div class="muted">${u.events} events · ${u.gender??"mixed"} · pays ${u.price_position??"–"}× category median</div><h4>Styles</h4>${bars(u.top_styles)}<h4>Colours</h4>${bars(u.top_colors)}`}
+(async()=>{const sel=$("#user");sel.innerHTML=`<option value="">Guest</option>`+[3,17,42,108,256,512,1024,2048].map(u=>`<option value="${u}">Shopper #${u}</option>`).join("");
+ sel.value="42";USER=42;sel.onchange=()=>{USER=sel.value===""?null:+sel.value;profile();view.kind==="search"?search(view.q,view.mode):feed()};
+ $("#f").onsubmit=e=>{e.preventDefault();const q=$("#q").value.trim();q?search(q):feed()};$(".logo").onclick=()=>{$("#q").value="";feed()};profile();feed()})();
+</script>
+</body>
+</html>

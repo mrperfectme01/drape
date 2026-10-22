@@ -1,0 +1,218 @@
+
+== data
+  20000 items, 6000 users, 563482 events, 57199 search sessions (0s)
+
+== text indices (BM25F, LSA, HNSW)
+
+== E1: fit behaviour models on days [0, 90.0)
+  ALS fitted in 19.0s
+  ALS MIPS-HNSW built in 73.4s
+  behaviour models fitted in 103.2s (42906 labelled queries, 34908 outfit pairs)
+
+== build ranking data from days [90.0, 105.0)
+  search: 5765 query groups, 308527 rows, 8.7% positive
+  recs:   2527 user groups, 214472 rows (85s)
+
+== train LambdaRank MLPs
+  LTR epoch  1 train NDCG@10=0.6649
+  LTR epoch  2 train NDCG@10=0.6727
+  LTR epoch  3 train NDCG@10=0.6759
+  LTR epoch  4 train NDCG@10=0.6769
+  LTR epoch  5 train NDCG@10=0.6773
+  LTR epoch  6 train NDCG@10=0.6785
+  LTR epoch  7 train NDCG@10=0.6793
+  LTR epoch  8 train NDCG@10=0.6798
+  LTR epoch  9 train NDCG@10=0.6795
+  LTR epoch 10 train NDCG@10=0.6800
+  LTR epoch  1 train NDCG@20=0.3685
+  LTR epoch  2 train NDCG@20=0.3770
+  LTR epoch  3 train NDCG@20=0.3827
+  LTR epoch  4 train NDCG@20=0.3842
+  LTR epoch  5 train NDCG@20=0.3864
+  LTR epoch  6 train NDCG@20=0.3851
+  LTR epoch  7 train NDCG@20=0.3868
+  LTR epoch  8 train NDCG@20=0.3875
+  LTR epoch  9 train NDCG@20=0.3891
+  LTR epoch 10 train NDCG@20=0.3888
+
+== E2: refit behaviour models on days [0, 105.0) and evaluate on [105.0, 120.0)
+  ALS fitted in 19.8s
+  ALS MIPS-HNSW built in 76.8s
+  behaviour models fitted in 109.7s (50061 labelled queries, 41132 outfit pairs)
+
+== evaluate: search
+{
+ "bm25": {
+  "ndcg@10": 0.06006558997361291,
+  "recall@10": 0.08575553078161872,
+  "mrr_purchase_or_cart": 0.05676388483136949
+ },
+ "hybrid": {
+  "ndcg@10": 0.11770701175024224,
+  "recall@10": 0.16232988588222022,
+  "mrr_purchase_or_cart": 0.10671000097380466,
+  "p50_ms": 6.76,
+  "p99_ms": 12.810599999999987
+ },
+ "ltr": {
+  "ndcg@10": 0.4388616185646841,
+  "recall@10": 0.47153165181735396,
+  "mrr_purchase_or_cart": 0.4995673061317233,
+  "p50_ms": 8.32,
+  "p99_ms": 14.520299999999992
+ },
+ "n_queries": 3000
+}
+  {'top1_acc': 0.9920145699075371, 'top3_acc': 1.0, 'n': 7138}
+
+== evaluate: recommendations
+{
+ "popular": {
+  "recall@20": 0.01749453381045579,
+  "ndcg@20": 0.008898657923396952,
+  "hit@10": 0.04165195905400635,
+  "p50_ms": 10.31,
+  "p99_ms": 18.8568
+ },
+ "covisit": {
+  "recall@20": 0.0286360190471633,
+  "ndcg@20": 0.018248535549196226,
+  "hit@10": 0.0585951288386869,
+  "p50_ms": 10.29,
+  "p99_ms": 19.36079999999999
+ },
+ "als": {
+  "recall@20": 0.10723039454281351,
+  "ndcg@20": 0.06533516500312014,
+  "hit@10": 0.21426050123543947,
+  "p50_ms": 10.2,
+  "p99_ms": 19.066799999999997
+ },
+ "ltr": {
+  "recall@20": 0.1518462042004878,
+  "ndcg@20": 0.09497151778800966,
+  "hit@10": 0.30391810801270736,
+  "p50_ms": 10.48,
+  "p99_ms": 19.187199999999994
+ },
+ "n_users": 2833
+}
+
+== evaluate: complete-the-look
+{
+ "auc": 0.8944300979032609,
+ "hit@50": 0.3670624677336087,
+ "random_hit@50": 0.02059367637911562,
+ "n_pairs": 1937,
+ "color_harmony_precision": 0.7,
+ "learned_top_pairs": [
+  [
+   "blue",
+   "yellow",
+   0.266
+  ],
+  [
+   "lavender",
+   "teal",
+   0.067
+  ],
+  [
+   "pink",
+   "lavender",
+   0.015
+  ],
+  [
+   "mustard",
+   "teal",
+   -0.007
+  ],
+  [
+   "olive",
+   "mustard",
+   -0.264
+  ],
+  [
+   "olive",
+   "maroon",
+   -0.289
+  ],
+  [
+   "blue",
+   "pink",
+   -0.321
+  ],
+  [
+   "blue",
+   "teal",
+   -2.289
+  ],
+  [
+   "green",
+   "lavender",
+   -2.34
+  ],
+  [
+   "pink",
+   "yellow",
+   -2.344
+  ]
+ ]
+}
+
+== evaluate: ANN indices
+{
+ "text_hnsw": [
+  {
+   "ef": 10,
+   "recall@10": 0.8723333333333344,
+   "ms_per_query": 0.4297533299995848,
+   "dist_evals": 289.3,
+   "speedup_in_dist_evals": 69.1323885240235
+  },
+  {
+   "ef": 16,
+   "recall@10": 0.9190000000000004,
+   "ms_per_query": 0.5283300266667842,
+   "dist_evals": 372.73333333333335,
+   "speedup_in_dist_evals": 53.65766410302271
+  },
+  {
+   "ef": 32,
+   "recall@10": 0.9620000000000001,
+   "ms_per_query": 0.8670731399994717,
+   "dist_evals": 563.0166666666667,
+   "speedup_in_dist_evals": 35.52292708919215
+  },
+  {
+   "ef": 64,
+   "recall@10": 0.9786666666666668,
+   "ms_per_query": 1.121500050000274,
+   "dist_evals": 878.7433333333333,
+   "speedup_in_dist_evals": 22.759774374770032
+  },
+  {
+   "ef": 128,
+   "recall@10": 0.9890000000000001,
+   "ms_per_query": 2.0798362300001827,
+   "dist_evals": 1373.3933333333334,
+   "speedup_in_dist_evals": 14.562470571674051
+  },
+  {
+   "ef": 256,
+   "recall@10": 0.995,
+   "ms_per_query": 3.8616643833332396,
+   "dist_evals": 2190.59,
+   "speedup_in_dist_evals": 9.129960421621572
+  }
+ ],
+ "brute_force_ms_numpy": 0.35682697666591895,
+ "n_items": 20000,
+ "als_mips_recall@50_ef200": 0.805
+}
+
+== final serving engine: fit on all days [0, 120.0)
+  ALS fitted in 21.1s
+  ALS MIPS-HNSW built in 81.4s
+  behaviour models fitted in 117.5s (57199 labelled queries, 47203 outfit pairs)
+
+Done in 628s -> artifacts/engine.pkl, artifacts/results.json, reports/

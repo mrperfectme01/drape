@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+artifacts/*
+!artifacts/results.json
+!artifacts/loadtest*.json
+!artifacts/train_log.txt
+artifacts_quick/
